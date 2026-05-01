@@ -12,9 +12,17 @@
 #include<fstream>
 #include<cstring> 
 #include<cerrno>
+#include<limits.h>
+
 int main(){
   while(1){
-        std::cout<<"$ ";
+        char currentpath[PATH_MAX];
+	if(getcwd(currentpath,sizeof(currentpath))!=NULL){
+		std::cout<<currentpath<<" $";
+	}
+	else{
+		std::cout<<"$ ";
+	}
         std::string input;
         getline(std::cin,input);
 	std::istringstream instr(input);
