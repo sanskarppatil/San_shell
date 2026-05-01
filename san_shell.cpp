@@ -11,7 +11,7 @@
 #include<sstream>
 #include<fstream>
 #include<cstring> 
-
+#include<cerrno>
 int main(){
   while(1){
         std::cout<<"$ ";
@@ -35,7 +35,10 @@ int main(){
         pid_t pid = fork();
 	if(pid==0){
 		execvp(args[0],args.data());
-		perror("exec failed");
+		if(errno == ENOENT) std::cerr << args[0] << ": command not found" << std::endl;
+		else{
+			perror("exec failed");
+		} 
 		exit(1);
 	}
 	else if(pid>0){
