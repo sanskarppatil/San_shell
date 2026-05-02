@@ -18,7 +18,7 @@ int main(){
   while(1){
         char currentpath[PATH_MAX];
 	if(getcwd(currentpath,sizeof(currentpath))!=NULL){
-		std::cout<<currentpath<<" $";
+		std::cout<<currentpath<<" :$ ";
 	}
 	else{
 		std::cout<<"$ ";
