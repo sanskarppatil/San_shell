@@ -34,19 +34,24 @@ int main(){
 		continue;          
         }
 	if(*tokens.begin()=="exit") break;
-	if(tokens[0]=="cd"){
-		if(tokens.size()<2) std::cerr<<	"cd:missing argument"<< std::endl;
-		else{
-			if(chdir(tokens[1].c_str())!=0) std::cerr<<"Failed to change directory"<<std::endl;
-		}
-		continue;
-	}
+        if(tokens[0] == "cd") {
+        if(tokens.size() < 2) {
+            std::cerr << "cd: missing argument" << std::endl;
+        }
+	 else {
+            // Correct parenthesis placement!
+            if(chdir(tokens[1].c_str()) != 0) {
+                perror("cd"); // Much better error reporting than a hardcoded string
+            }
+        }
+        	continue;
+   	 }
 	std::vector<char*> args;
 	for(auto &s:tokens){
 		args.push_back(const_cast<char*>(s.c_str()));
 
 	}
-	args.push_back(nullptr);
+
         pid_t pid = fork();
 	if(pid==0){
 		execvp(args[0],args.data());
@@ -64,5 +69,6 @@ int main(){
 	}
   }
   return 0;
-
 }
+
+
