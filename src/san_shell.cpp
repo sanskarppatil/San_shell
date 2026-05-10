@@ -13,7 +13,8 @@
 #include<cstring> 
 #include<cerrno>
 #include<limits.h>
-
+#include<stdio.h>
+#include<sys/stat.h>
 int main(){
   while(1){
         char currentpath[PATH_MAX];
@@ -38,7 +39,7 @@ int main(){
         if(tokens.size() < 2) {
             std::cerr << "cd: missing argument" << std::endl;
         }
-	 else {
+	else {
             // Correct parenthesis placement!
             if(chdir(tokens[1].c_str()) != 0) {
                 perror("cd"); // Much better error reporting than a hardcoded string
@@ -46,6 +47,32 @@ int main(){
         }
         	continue;
    	 }
+	else if(tokens[0]=="pwd"){
+		char currentpath[PATH_MAX];
+		if(getcwd(currentpath,sizeof(currentpath))!=NULL){
+			std::cout<<currentpath<<std::endl;
+		}
+		else std::cerr<<"pwd not working"<<std::endl;
+		continue;
+	}
+	else if(tokens[0]=="which"){
+		char *path = getenv("PATH");
+		if(tokens.size()<=1) continue;
+		std::string path_string(path);
+		std::stringstream ss(path_string);
+	        std::string paths;
+		while(getline(ss,paths,':')){
+			std::string fullpath = paths;
+			fullpath += "/";
+			fullpath += tokens[1];
+			const char *c_path = fullpath.c_str();
+			struct stat sb;
+			if(stat(c_path,&sb) == 0){
+				std::cout<<fullpath<<std::endl;
+			}						
+		}
+		continue;
+	}
 	std::vector<char*> args;
 	for(auto &s:tokens){
 		args.push_back(const_cast<char*>(s.c_str()));
